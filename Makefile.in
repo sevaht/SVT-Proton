@@ -1427,7 +1427,10 @@ $(DIST_COPY_TARGETS): | $(DST_DIR)
 all-dist: $(DIST_COPY_TARGETS)
 
 all-dist:
-	echo `date '+%s'` `GIT_DIR=$(abspath $(SRCDIR)/.git) git describe --tags` > $(DIST_VERSION)
+	# SVT: report the nearest upstream release tag (e.g. proton-11.0-2e) without
+	# the "-<commits>-g<hash>" suffix our own commits would add, so an SVT build
+	# carries exactly the version of the Proton it is based on.
+	echo `date '+%s'` `GIT_DIR=$(abspath $(SRCDIR)/.git) git describe --tags --abbrev=0 --match 'proton-*'` > $(DIST_VERSION)
 
 
 ##

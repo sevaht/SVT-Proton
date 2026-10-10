@@ -1,0 +1,9 @@
+# What this branch is based on. Written by svt/update.sh; edit by hand only to
+# change SERIES (for example when moving from Proton 11 to Proton 12).
+#
+# SERIES       the Proton series to follow: tags proton-<SERIES>-<n>, branch proton_<SERIES>
+# PROTON_TAG   the upstream Proton release these commits sit on
+# WINE_COMMIT  the Wine commit that tag pins (our SVT-wine commits sit on it)
+SERIES=11.0
+PROTON_TAG=proton-11.0-2e
+WINE_COMMIT=e60892cc2398b0a83c332a2078c7b85e47bdb42b
