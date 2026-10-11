@@ -27,6 +27,11 @@ SVT_BUILD_DIR="${SVT_BUILD_DIR:-$SVT_ROOT/../SVT-Proton-build}"
 SVT_RELEASE_DIR="${SVT_RELEASE_DIR:-$SVT_ROOT/../SVT-Proton-release}"
 SVT_CONTAINER_ENGINE="${SVT_CONTAINER_ENGINE:-docker}"
 
+# The architecture the build targets (what configure.sh builds by default),
+# which release archives carry in their name: SVT-Proton-11.0-2e-x86_64.tar.xz.
+# A release is one tag with one archive per architecture.
+SVT_ARCH="${SVT_ARCH:-x86_64}"
+
 svt_die() {
     echo "${0##*/}: $*" >&2
     exit 1

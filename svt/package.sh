@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Package the build for release: $SVT_RELEASE_DIR/SVT-Proton-<version>.tar.xz
+# Package the build for release: $SVT_RELEASE_DIR/SVT-Proton-<version>-<arch>.tar.xz
 # (svt/release.sh adds the SHA256SUMS.txt that goes with it).
 #
-#   svt/package.sh            first build of an upstream version: SVT-Proton-11.0-2e.tar.xz
-#   svt/package.sh --rev 2    a rebuild of the same upstream version: SVT-Proton-11.0-2e-r2.tar.xz
+#   svt/package.sh            first build of an upstream version: SVT-Proton-11.0-2e-x86_64.tar.xz
+#   svt/package.sh --rev 2    a rebuild of the same upstream version: SVT-Proton-11.0-2e-r2-x86_64.tar.xz
 #
 # The archive has one top-level folder, named for the tool (SVT-Proton-11.0), so extracting it inside
 # Steam's compatibilitytools.d is the whole installation. The version in the
@@ -28,7 +28,7 @@ dist="$SVT_BUILD_DIR/dist"
 tag="$(cut -d' ' -f2 "$dist/version")"
 [[ "$tag" == proton-* ]] || svt_die "unexpected version '$tag' in $dist/version"
 version="$(svt_version_from_tag "$tag")"
-name="SVT-Proton-$version${rev:+-r$rev}"
+name="SVT-Proton-$version${rev:+-r$rev}-$SVT_ARCH"
 
 mkdir -p "$SVT_RELEASE_DIR"
 archive="$SVT_RELEASE_DIR/$name.tar.xz"

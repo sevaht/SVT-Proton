@@ -6,7 +6,8 @@
 #   svt/release.sh --draft    create it as a draft to look over first
 #
 # Release tag: svt-<upstream version> (svt-11.0-2e, svt-11.0-2e-r2). These are
-# our own tags; Valve's proton-* tags are never reused. Assets: the archive and
+# our own tags; Valve's proton-* tags are never reused. Assets: the archive (named
+# with its architecture, SVT-Proton-<version>-x86_64.tar.xz) and
 # SHA256SUMS.txt. Needs the GitHub CLI, logged in with push access.
 set -euo pipefail
 # shellcheck source=config.sh
@@ -33,8 +34,8 @@ git -C "$SVT_ROOT" fetch --quiet origin "$SVT_BRANCH"
     svt_die "this branch is not what origin/$SVT_BRANCH has; push it first"
 
 version="$(svt_version_from_tag "$PROTON_TAG")"
-name="SVT-Proton-$version${rev:+-r$rev}"
-tag="svt-$version${rev:+-r$rev}"
+name="SVT-Proton-$version${rev:+-r$rev}-$SVT_ARCH"
+tag="svt-$version${rev:+-r$rev}"  # the release holds one archive per architecture
 archive="$SVT_RELEASE_DIR/$name.tar.xz"
 [[ -f "$archive" ]] || svt_die "no $archive; run svt/package.sh"
 if gh release view "$tag" --repo "$SVT_GITHUB_REPO" >/dev/null 2>&1; then

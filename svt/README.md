@@ -18,13 +18,13 @@ installed side by side (`SVT-Proton-10.0`, `SVT-Proton-11.0`).
 
 ## Install
 
-Download `SVT-Proton-<version>.tar.xz` and `SHA256SUMS.txt` from the
+Download `SVT-Proton-<version>-x86_64.tar.xz` and `SHA256SUMS.txt` from the
 [releases](https://github.com/sevaht/SVT-Proton/releases) page, then:
 
 ```
 sha256sum --check SHA256SUMS.txt
 mkdir -p ~/.local/share/Steam/compatibilitytools.d
-tar -xJf SVT-Proton-<version>.tar.xz -C ~/.local/share/Steam/compatibilitytools.d
+tar -xJf SVT-Proton-<version>-x86_64.tar.xz -C ~/.local/share/Steam/compatibilitytools.d
 ```
 
 Restart Steam, then pick **SVT-Proton-<series>** (for example `SVT-Proton-11.0`) under the game's Properties > Compatibility. A new Proton upgrades
@@ -88,18 +88,20 @@ the new tip.
 ```
 svt/build.sh              # build in $SVT_BUILD_DIR (Docker; hours the first time)
 # test it: pick it for a game and run it
-svt/package.sh            # SVT-Proton-<version>.tar.xz in $SVT_RELEASE_DIR
+svt/package.sh            # SVT-Proton-<version>-x86_64.tar.xz in $SVT_RELEASE_DIR
 svt/release.sh            # GitHub release svt-<version>, with SHA256SUMS.txt
 ```
 
 A rebuild of the same upstream version (a changed patch) takes `--rev 2` on `package.sh` and `release.sh`:
-`SVT-Proton-11.0-2e-r2.tar.xz`, tag `svt-11.0-2e-r2`.
+`SVT-Proton-11.0-2e-r2-x86_64.tar.xz`, tag `svt-11.0-2e-r2`.
 
 ## Release conventions (for tools that fetch it)
 
 - Repository `sevaht/SVT-Proton`, tag `svt-<upstream version>[-r<N>]` (`svt-11.0-2e`, `svt-10.0-4b`); our tags
   never reuse Valve's `proton-*`. The series is the part of the version before the last `-`.
-- Assets: `SVT-Proton-<version>[-r<N>].tar.xz` and `SHA256SUMS.txt` (`sha256sum --check` format).
+- Assets: `SVT-Proton-<version>[-r<N>]-<arch>.tar.xz` and `SHA256SUMS.txt` (`sha256sum --check` format). The
+  architecture is in the name so a release can later carry more than one (only `x86_64` exists today, the same
+  as Valve's Proton for desktop Linux); the tag is the same for all of them.
 - The archive has a single top-level folder named for the tool, `SVT-Proton-<series>/`: extracting it into
   `compatibilitytools.d` is the whole installation. `compatibilitytool.vdf` inside names the tool the same.
 - The upstream version is in the archive's `version` file, second field (`proton-11.0-2e`).

@@ -103,10 +103,30 @@ if ((!refresh)) && [[ "$tag" == "$PROTON_TAG" ]]; then
 fi
 # A new tag is only recorded (in svt/UPSTREAM) once its pointer commit exists.
 
-# The pointer commit from last time goes away; it is rebuilt below.
-if [[ "$(git -C "$SVT_ROOT" log -1 --format=%s)" == "svt: point wine"* ]]; then
-    git -C "$SVT_ROOT" reset --hard --quiet HEAD~1
-fi
+# The pointer commit from last time goes away, wherever it is (a commit added
+# on top of it is fine); it is rebuilt below. The base is where this branch
+# sits now: the old tag, or (after resolving a conflict by hand) the new one.
+# Commits before the first pointer commit are left exactly as they are; the
+# ones after it are cherry-picked back, minus the pointer commits.
+drop_pointer_commits() { # the commit the branch sits on
+    local base="$1" c new_top="$1" seen=0 all=() replay=()
+    mapfile -t all < <(git -C "$SVT_ROOT" rev-list --reverse "$base..HEAD")
+    for c in "${all[@]}"; do
+        if [[ "$(git -C "$SVT_ROOT" log -1 --format=%s "$c")" == "svt: point wine"* ]]; then
+            seen=1
+        elif ((seen)); then
+            replay+=("$c")
+        else
+            new_top="$c"
+        fi
+    done
+    ((seen)) || return 0
+    git -C "$SVT_ROOT" reset --hard --quiet "$new_top"
+    for c in "${replay[@]}"; do
+        git -C "$SVT_ROOT" cherry-pick "$c" >/dev/null
+    done
+}
+if ((refresh)); then drop_pointer_commits "$tag"; else drop_pointer_commits "$PROTON_TAG"; fi
 
 if [[ -n "$new_series" ]]; then
     sed -i -E "s/^SERIES=.*/SERIES=$new_series/" "$SVT_ROOT/svt/UPSTREAM"
