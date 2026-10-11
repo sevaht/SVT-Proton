@@ -13,6 +13,7 @@ installed side by side (`SVT-Proton-10.0`, `SVT-Proton-11.0`).
 | Change | Where | What it does |
 | --- | --- | --- |
 | Early desktop setup | [SVT-wine](https://github.com/sevaht/SVT-wine), `dlls/win32u/class.c` | For the programs named in `PROTON_SVT_EAGER_DESKTOP` (file names such as `H1Z1.exe`; several separated by `:`, as in `H1Z1.exe:Other.exe`), Wine does its one-time desktop/driver/window-class setup while `user32` initializes instead of lazily on the first window operation. ROTK's patch library, which the ROTK launcher's game files load into Z1 Battle Royale, suspends the game's main thread during start-up; landing inside the lazy setup made the game hang forever. Without the variable nothing changes. |
+| Frameless window size | [SVT-wine](https://github.com/sevaht/SVT-wine), `dlls/win32u/window.c` | Upstream Wine's fix `6cfa941df3` (2026-10-07): a window whose client area extends into its window-manager frame, such as the frameless ROTK Launcher, is shown whole instead of 30 px too high. Valve's Proton does not have it yet. |
 | Version string | `Makefile.in` | The `version` file reports the nearest upstream release tag, not `<tag>-<commits>-g<hash>`. |
 | Wine source | `.gitmodules` | The `wine` submodule is `../SVT-wine`. |
 
