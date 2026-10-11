@@ -13,6 +13,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/config.sh"
 svt_read_upstream
 
 svt_require_branch "$SVT_ROOT"
+
+# Check out the Wine commit this branch pins first: until then git sees the
+# wine submodule as modified (it still has the previous commit checked out),
+# which is exactly what svt/update.sh leaves behind. A submodule with real
+# local edits is still refused, by the update or by the check after it.
+git -C "$SVT_ROOT" submodule sync --quiet --recursive
+git -C "$SVT_ROOT" submodule update --init --recursive --jobs 8
 svt_require_clean "$SVT_ROOT"
 
 # The version recorded in the build is the nearest upstream release tag, so the
@@ -22,9 +29,7 @@ version_tag="$(git -C "$SVT_ROOT" describe --tags --abbrev=0 --match 'proton-*' 
 [[ "$version_tag" == "$PROTON_TAG" ]] ||
     svt_die "the nearest upstream tag is $version_tag but svt/UPSTREAM says $PROTON_TAG; run svt/update.sh --refresh"
 
-echo "Building $SVT_BUILD_NAME for $version_tag"
-git -C "$SVT_ROOT" submodule sync --quiet --recursive
-git -C "$SVT_ROOT" submodule update --init --recursive --jobs 8
+echo "Building $SVT_BUILD_NAME for $version_tag (wine $(git -C "$SVT_ROOT/wine" rev-parse --short=12 HEAD))"
 
 mkdir -p "$SVT_BUILD_DIR"
 cd "$SVT_BUILD_DIR"
