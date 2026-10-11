@@ -34,11 +34,22 @@ mkdir -p "$SVT_RELEASE_DIR"
 archive="$SVT_RELEASE_DIR/$name.tar.xz"
 [[ ! -e "$archive" ]] || svt_die "$archive already exists (a rebuild of the same version needs --rev N)"
 
+# The rename touches only member names and hard-link targets (flags=rh). Never
+# symlink targets: relative ones such as ../../lib/wine start with a dot too,
+# and renaming them breaks every link in the package.
 echo "Packaging $name (this takes a few minutes)..."
 XZ_OPT="${XZ_OPT:--T0 -6}" tar -C "$dist" \
-    --transform "s,^\.,$SVT_BUILD_NAME," \
+    --transform "flags=rh;s,^\.,$SVT_BUILD_NAME," \
     --owner=0 --group=0 --numeric-owner \
     -cJf "$archive" .
+
+# Self-check: every symlink must point where it did in the build.
+src_links="$(cd "$dist" && find . -type l -printf '%l\n' | sort)"
+arc_links="$(tar -tvJf "$archive" | awk '$1 ~ /^l/ { sub(/^.* -> /, ""); print }' | sort)"
+if [[ "$src_links" != "$arc_links" ]]; then
+    rm -f "$archive"
+    svt_die "symlink targets changed while packaging; the archive was removed"
+fi
 
 echo "$archive ($(du -h "$archive" | cut -f1))"
 (cd "$SVT_RELEASE_DIR" && sha256sum "$name.tar.xz")

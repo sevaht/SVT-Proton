@@ -86,9 +86,9 @@ the new tip.
 **Cut a release** (from a committed and pushed state):
 
 ```
-svt/build.sh              # build in $SVT_BUILD_DIR (Docker; hours the first time)
+svt/build.sh              # build in $SVT_BUILD_DIR, default svt/out/build (Docker; hours the first time)
 # test it: pick it for a game and run it
-svt/package.sh            # SVT-Proton-<version>-x86_64.tar.xz in $SVT_RELEASE_DIR
+svt/package.sh            # SVT-Proton-<version>-x86_64.tar.xz in $SVT_RELEASE_DIR, default svt/out/release
 svt/release.sh            # GitHub release svt-<version>, with SHA256SUMS.txt
 ```
 

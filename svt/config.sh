@@ -22,9 +22,9 @@ SVT_UPSTREAM_WINE="${SVT_UPSTREAM_WINE:-https://github.com/ValveSoftware/wine.gi
 # (The wine/ folder inside this repo is only the copy a build checks out.)
 SVT_WINE_DIR="${SVT_WINE_DIR:-$SVT_ROOT/../SVT-wine}"
 
-# Build and release output live outside the repository.
-SVT_BUILD_DIR="${SVT_BUILD_DIR:-$SVT_ROOT/../SVT-Proton-build}"
-SVT_RELEASE_DIR="${SVT_RELEASE_DIR:-$SVT_ROOT/../SVT-Proton-release}"
+# Build and release output live in svt/out, which git ignores.
+SVT_BUILD_DIR="${SVT_BUILD_DIR:-$SVT_ROOT/svt/out/build}"
+SVT_RELEASE_DIR="${SVT_RELEASE_DIR:-$SVT_ROOT/svt/out/release}"
 SVT_CONTAINER_ENGINE="${SVT_CONTAINER_ENGINE:-docker}"
 
 # The architecture the build targets (what configure.sh builds by default),

@@ -6,3 +6,6 @@
 /.vagrant/
 /vagrant_share/
 /build/
+
+# SVT-Proton build and release output (svt/config.sh)
+/svt/out/
